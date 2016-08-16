@@ -315,7 +315,10 @@ public:
 			vkCmdBindIndexBuffer(drawCmdBuffers[i], indices.buffer, 0, VK_INDEX_TYPE_UINT32);
 
 			// Draw indexed triangle
-			vkCmdDrawIndexed(drawCmdBuffers[i], indices.count, 1, 0, 0, 1);
+			// SWITCH THE ORDER OF THESE TWO CALLS
+			vkCmdDrawIndexed(drawCmdBuffers[i], indices.count, 1, 0, 0, 0);
+
+			vkCmdDrawIndexed(drawCmdBuffers[i], indices.count, 1, 0, 3, 1);
 
 			vkCmdEndRenderPass(drawCmdBuffers[i]);
 
@@ -376,7 +379,11 @@ public:
 		{
 			{ {  1.0f,  1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
 			{ { -1.0f,  1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
-			{ {  0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }
+			{ {  0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } },
+
+			{ {  3.0f,  1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
+			{ {  1.0f,  1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
+			{ {  2.0f, -1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }
 		};
 		uint32_t vertexBufferSize = static_cast<uint32_t>(vertexBuffer.size()) * sizeof(Vertex);
 
@@ -906,7 +913,7 @@ public:
 		// Vulkan loads it's shaders from an immediate binary representation called SPIR-V
 		// Shaders are compiled offline from e.g. GLSL using the reference glslang compiler
 		std::array<VkPipelineShaderStageCreateInfo,2> shaderStages;
-		shaderStages[0] = loadShader(getAssetPath() + "shaders/triangle.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+		shaderStages[0] = loadShader(getAssetPath() + "shaders/instanced_triangle.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
 		shaderStages[1] = loadShader(getAssetPath() + "shaders/triangle.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 
 		// Assign the pipeline states to the pipeline creation info structure
